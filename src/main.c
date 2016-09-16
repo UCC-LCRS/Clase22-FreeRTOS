@@ -12,37 +12,42 @@
 
 /* Standard includes */
 #include <stdio.h>                          // prototype declarations for I/O functions
+#include <string.h>
 
 /* Scheduler includes */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "semphr.h"
 
 TaskHandle_t tareaB;
+SemaphoreHandle_t xSemaphore;
 
 void prvTaskA(void* pvParameters) {
 	(void) pvParameters;                    // Just to stop compiler warnings.
-
+	char msg[] = "Hola desde la Tarea A\n";
 	for (;;) {
-		led_setBright(LED_ROJO, 0);
-		vTaskDelay(500);
-		led_setBright(LED_ROJO, 100);
-		vTaskDelay(500);
-		//vTaskResume(tareaB);
+		xSemaphoreTake(xSemaphore, portMAX_DELAY);
+		for (int i = 0; i < strlen(msg); i++) {
+			TransmitData(&msg[i], 1);
+			vTaskDelay(1);
+
+		}
+		xSemaphoreGive(xSemaphore);
+		vTaskDelay(1);
 	}
 }
 
 void prvTaskB(void* pvParameters) {
 	(void) pvParameters;                    // Just to stop compiler warnings.
-	uint8_t status;
+	char msg[] = "Hola desde la Tarea B\n";
 	for (;;) {
-		if (status) {
-			led_setBright(LED_VERDE, 0);
-			status = 0;
-		} else {
-			led_setBright(LED_VERDE, 100);
-			status = 1;
+		xSemaphoreTake(xSemaphore, portMAX_DELAY);
+		for (int i = 0; i < strlen(msg); i++) {
+			TransmitData(&msg[i], 1);
+			vTaskDelay(1);
 		}
-		vTaskSuspend(NULL);
+		xSemaphoreGive(xSemaphore);
+		vTaskDelay(1);
 	}
 }
 
@@ -55,6 +60,9 @@ int main(void) {
 	xTaskCreate(prvTaskB, (signed char * ) "TaskB", configMINIMAL_STACK_SIZE,
 			NULL, tskIDLE_PRIORITY, &tareaB);
 
+	xSemaphore = xSemaphoreCreateBinary();
+	xSemaphoreGive(xSemaphore);
+
 	vTaskStartScheduler();
 
 	//should never get here
@@ -64,11 +72,6 @@ int main(void) {
 }
 
 void APP_1ms() {
-	static int counter = 0;
-	counter++;
-	if (counter > 1000) {
-		counter = 0;
-		xTaskResumeFromISR(tareaB);
-	}
+
 }
 

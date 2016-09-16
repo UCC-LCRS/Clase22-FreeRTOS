@@ -9,5 +9,6 @@
 #define FREERTOSCONFIG_H_
 
 #define INCLUDE_vTaskSuspend                    1
+#define configUSE_PREEMPTION                    1
 
 #endif /* FREERTOSCONFIG_H_ */

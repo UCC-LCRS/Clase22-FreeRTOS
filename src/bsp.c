@@ -13,9 +13,48 @@ extern void APP_1ms(void);
 TIM_HandleTypeDef TIM2_Handle;
 TIM_HandleTypeDef TIM4_Handle;
 ADC_HandleTypeDef ADC_HandleStruct;
+UART_HandleTypeDef UART3_Handle;
+uint8_t rxBuffer[50];
 
 uint32_t* const leds_pwm[] = { &TIM4->CCR1, &TIM4->CCR3, &TIM4->CCR2,
 		&TIM4->CCR4 };
+
+
+void BSP_UART_Init(void) {
+
+	GPIO_InitTypeDef GPIO_InitStruct;
+
+	__GPIOD_CLK_ENABLE()
+	;
+
+	__HAL_RCC_USART3_CLK_ENABLE()
+	;
+
+	GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_8;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+	UART3_Handle.Instance = USART3;
+	UART3_Handle.Init.BaudRate = 1200;
+	UART3_Handle.Init.WordLength = UART_WORDLENGTH_8B;
+	UART3_Handle.Init.StopBits = UART_STOPBITS_1;
+	UART3_Handle.Init.Parity = UART_PARITY_NONE;
+	UART3_Handle.Init.Mode = UART_MODE_TX_RX;
+	UART3_Handle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	UART3_Handle.Init.OverSampling = UART_OVERSAMPLING_16;
+	HAL_UART_Init(&UART3_Handle);
+
+	HAL_NVIC_SetPriority(USART3_IRQn, 0, 1);
+	HAL_NVIC_EnableIRQ(USART3_IRQn);
+
+	HAL_UART_Receive_IT(&UART3_Handle, rxBuffer, 50);
+}
+
+
+
 
 void BSP_Init(void) {
 	RCC_OscInitTypeDef RCC_OscInitStruct;
@@ -117,6 +156,7 @@ void BSP_Init(void) {
 	HAL_TIM_PWM_Start(&TIM4_Handle, TIM_CHANNEL_4);
 
 	BSP_ADC_Init();
+	BSP_UART_Init();
 }
 
 uint32_t Get_SW_State(void) {
@@ -181,5 +221,17 @@ void TIM2_IRQHandler(void) {
 
 	__HAL_TIM_CLEAR_FLAG(&TIM2_Handle, TIM_FLAG_UPDATE);
 	APP_1ms();
+
+}
+
+void USART3_IRQHandler(void) {
+	HAL_UART_IRQHandler(&UART3_Handle);
+	HAL_UART_Receive_IT(&UART3_Handle, rxBuffer, 50);
+
+}
+
+
+void TransmitData(uint8_t *buffer, uint8_t size) {
+	HAL_UART_Transmit(&UART3_Handle, buffer, size, 100);
 
 }
