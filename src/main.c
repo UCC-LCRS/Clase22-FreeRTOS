@@ -27,7 +27,7 @@ void prvTaskA(void* pvParameters) {
 		vTaskDelay(500);
 		led_setBright(LED_ROJO, 100);
 		vTaskDelay(500);
-		vTaskResume(tareaB);
+		//vTaskResume(tareaB);
 	}
 }
 
@@ -53,7 +53,7 @@ int main(void) {
 	xTaskCreate(prvTaskA, (signed char * ) "TaskA", configMINIMAL_STACK_SIZE,
 			NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
 	xTaskCreate(prvTaskB, (signed char * ) "TaskB", configMINIMAL_STACK_SIZE,
-			NULL, tskIDLE_PRIORITY,&tareaB);
+			NULL, tskIDLE_PRIORITY, &tareaB);
 
 	vTaskStartScheduler();
 
@@ -64,5 +64,11 @@ int main(void) {
 }
 
 void APP_1ms() {
-
+	static int counter = 0;
+	counter++;
+	if (counter > 1000) {
+		counter = 0;
+		xTaskResumeFromISR(tareaB);
+	}
 }
+

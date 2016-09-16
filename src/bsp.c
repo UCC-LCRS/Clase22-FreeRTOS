@@ -68,8 +68,8 @@ void BSP_Init(void) {
 	HAL_TIM_Base_Init(&TIM2_Handle);
 	HAL_TIM_Base_Start_IT(&TIM2_Handle);
 
-	//HAL_NVIC_SetPriority(TIM2_IRQn, 0, 1);
-	//HAL_NVIC_EnableIRQ(TIM2_IRQn);
+	HAL_NVIC_SetPriority(TIM2_IRQn, 10, 1);
+	HAL_NVIC_EnableIRQ(TIM2_IRQn);
 
 	__GPIOA_CLK_ENABLE()
 	;
