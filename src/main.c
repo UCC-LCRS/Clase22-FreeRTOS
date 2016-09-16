@@ -8,8 +8,7 @@
   ******************************************************************************
 */
 
-#include "stm32f4xx.h"
-#include "stm32f4_discovery.h"
+#include "bsp.h"
 			
 /* Standard includes */
 #include <stdio.h>                          // prototype declarations for I/O functions
@@ -24,9 +23,10 @@ void prvTaskA (void* pvParameters)
     (void) pvParameters;                    // Just to stop compiler warnings.
 
     for (;;) {
-        vTaskDelay(5000);
-        printf("Task A\n");
-        vTaskDelay(5000);
+    	led_setBright(LED_ROJO,0);
+        vTaskDelay(500);
+    	led_setBright(LED_ROJO,100);
+        vTaskDelay(500);
     }
 }
 
@@ -35,15 +35,17 @@ void prvTaskB (void* pvParameters)
     (void) pvParameters;                    // Just to stop compiler warnings.
 
     for (;;) {
-        printf("Task B\n");
-        vTaskDelay(10000);
+    	led_setBright(LED_VERDE,0);
+        vTaskDelay(1000);
+    	led_setBright(LED_VERDE,100);
+        vTaskDelay(1000);
     }
 }
 
 int main (void)
 {
 // Init BSP
-
+BSP_Init();
 
     xTaskCreate( prvTaskA, ( signed char * ) "TaskA", configMINIMAL_STACK_SIZE, NULL,
         tskIDLE_PRIORITY, ( xTaskHandle * ) NULL );
@@ -55,4 +57,9 @@ int main (void)
    //should never get here
    printf("ERORR: vTaskStartScheduler returned!");
    for (;;);
+}
+
+void APP_1ms(){
+
+
 }

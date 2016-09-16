@@ -96,6 +96,7 @@
 "Utilities/STM32F4-Discovery/stm32f4_discovery.o"
 "Utilities/STM32F4-Discovery/stm32f4_discovery_accelerometer.o"
 "Utilities/STM32F4-Discovery/stm32f4_discovery_audio.o"
+"src/bsp.o"
 "src/main.o"
 "src/stm32f4xx_it.o"
 "src/syscalls.o"

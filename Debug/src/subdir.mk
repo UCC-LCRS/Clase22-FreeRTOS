@@ -4,18 +4,21 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/bsp.c \
 ../src/main.c \
 ../src/stm32f4xx_it.c \
 ../src/syscalls.c \
 ../src/system_stm32f4xx.c 
 
 OBJS += \
+./src/bsp.o \
 ./src/main.o \
 ./src/stm32f4xx_it.o \
 ./src/syscalls.o \
 ./src/system_stm32f4xx.o 
 
 C_DEPS += \
+./src/bsp.d \
 ./src/main.d \
 ./src/stm32f4xx_it.d \
 ./src/syscalls.d \
