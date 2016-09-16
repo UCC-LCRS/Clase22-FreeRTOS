@@ -18,36 +18,43 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
+#include "queue.h"
 
 TaskHandle_t tareaB;
 SemaphoreHandle_t xSemaphore;
+QueueHandle_t xQueue1;
 
 void prvTaskA(void* pvParameters) {
 	(void) pvParameters;                    // Just to stop compiler warnings.
-	char msg[] = "Hola desde la Tarea A\n";
+	char msg = 'A';
 	for (;;) {
-		xSemaphoreTake(xSemaphore, portMAX_DELAY);
-		for (int i = 0; i < strlen(msg); i++) {
-			TransmitData(&msg[i], 1);
-			vTaskDelay(1);
-
-		}
-		xSemaphoreGive(xSemaphore);
-		vTaskDelay(1);
+		xQueueSend(xQueue1, (void * ) &msg, 0);
+		xQueueSend(xQueue1, (void * ) &msg, 0);
+		xQueueSend(xQueue1, (void * ) &msg, 0);
+		vTaskDelay(1000);
 	}
 }
 
 void prvTaskB(void* pvParameters) {
 	(void) pvParameters;                    // Just to stop compiler warnings.
-	char msg[] = "Hola desde la Tarea B\n";
+	char msg = 'B';
 	for (;;) {
-		xSemaphoreTake(xSemaphore, portMAX_DELAY);
-		for (int i = 0; i < strlen(msg); i++) {
-			TransmitData(&msg[i], 1);
-			vTaskDelay(1);
-		}
-		xSemaphoreGive(xSemaphore);
-		vTaskDelay(1);
+		xQueueSend(xQueue1, (void * ) &msg, 0);
+		xQueueSend(xQueue1, (void * ) &msg, 0);
+		xQueueSend(xQueue1, (void * ) &msg, 0);
+		vTaskDelay(100);
+	}
+}
+
+void prvTaskC(void* pvParameters) {
+	(void) pvParameters;                    // Just to stop compiler warnings.
+	char msg;
+	char buffer[100];
+	int size;
+	for (;;) {
+		xQueueReceive( xQueue1,(void * ) &( msg ), portMAX_DELAY );
+		size = sprintf(buffer, "Recibi mensaje %c\n",msg);
+		TransmitData(buffer, size);
 	}
 }
 
@@ -59,9 +66,13 @@ int main(void) {
 			NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
 	xTaskCreate(prvTaskB, (signed char * ) "TaskB", configMINIMAL_STACK_SIZE,
 			NULL, tskIDLE_PRIORITY, &tareaB);
+	xTaskCreate(prvTaskC, (signed char * ) "TaskC", configMINIMAL_STACK_SIZE,
+			NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
 
 	xSemaphore = xSemaphoreCreateBinary();
 	xSemaphoreGive(xSemaphore);
+
+	xQueue1 = xQueueCreate(31, sizeof(char));
 
 	vTaskStartScheduler();
 
