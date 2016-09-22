@@ -57,22 +57,47 @@ void prvTaskC(void* pvParameters) {
 		TransmitData(buffer, size);
 	}
 }
+typedef struct {
+	uint8_t led;
+	uint32_t int_inicial;
+} parametro;
+
+void tareaLed(void* pvParameters) {
+	parametro *data = (parametro *) pvParameters;
+
+	int i = data->int_inicial;
+	int incre = 1;
+
+	for (;;) {
+		vTaskDelay(20);
+		led_setBright(data->led, i);
+
+		i += incre;
+		if (i >= 75)
+			incre = -1;
+		else if (i <= 0)
+			incre = 1;
+	}
+}
+
+parametro dataA = { LED_VERDE, 0 };
+parametro dataB = { LED_NARANJA, 25 };
+parametro dataC = { LED_ROJO, 50 };
+parametro dataD = { LED_AZUL, 75 };
 
 int main(void) {
-// Init BSP
+	//vUartInit();
+
 	BSP_Init();
 
-	xTaskCreate(prvTaskA, (signed char * ) "TaskA", configMINIMAL_STACK_SIZE,
-			NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
-	xTaskCreate(prvTaskB, (signed char * ) "TaskB", configMINIMAL_STACK_SIZE,
-			NULL, tskIDLE_PRIORITY, &tareaB);
-	xTaskCreate(prvTaskC, (signed char * ) "TaskC", configMINIMAL_STACK_SIZE,
-			NULL, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
-
-	xSemaphore = xSemaphoreCreateBinary();
-	xSemaphoreGive(xSemaphore);
-
-	xQueue1 = xQueueCreate(31, sizeof(char));
+	xTaskCreate(tareaLed, (signed char * ) "TaskA", configMINIMAL_STACK_SIZE,
+			(void* ) &dataA, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
+	xTaskCreate(tareaLed, (signed char * ) "TaskB", configMINIMAL_STACK_SIZE,
+			(void* ) &dataB, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
+	xTaskCreate(tareaLed, (signed char * ) "TaskC", configMINIMAL_STACK_SIZE,
+			(void* ) &dataC, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
+	xTaskCreate(tareaLed, (signed char * ) "TaskD", configMINIMAL_STACK_SIZE,
+			(void* ) &dataD, tskIDLE_PRIORITY, ( xTaskHandle * ) NULL);
 
 	vTaskStartScheduler();
 
@@ -85,4 +110,3 @@ int main(void) {
 void APP_1ms() {
 
 }
-

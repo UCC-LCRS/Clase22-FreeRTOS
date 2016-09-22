@@ -7,7 +7,10 @@ src/main.o: ../src/main.c ../src/bsp.h \
  C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h \
  C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
  C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
- C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/list.h
+ C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
+ C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
+ C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
+ C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 
 ../src/bsp.h:
 
@@ -28,3 +31,9 @@ C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/
 C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
 
 C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/list.h:
+
+C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h:
+
+C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
+
+C:/Users/LCSR-AF/workspace/Clase20-RTOS/Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
